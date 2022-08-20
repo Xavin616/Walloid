@@ -63,7 +63,7 @@ def index():
                 print('Searching:', new_txt)
                 futures = []
                 with ThreadPoolExecutor() as executor:
-                    for num in range(1,21):
+                    for num in range(1,2):
                         futures.append(
                           executor.submit(send_image(chat_id, new_txt, [i for i in get_images(new_txt)]))  
                         )
