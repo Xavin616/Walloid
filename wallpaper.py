@@ -27,4 +27,3 @@ def get_images(query: str):
         driver.close()
     except e:
         print("Error oo")
-        return e
