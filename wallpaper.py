@@ -25,5 +25,5 @@ def get_images(query: str):
             new_src = src.replace('thumb', 'file')
             yield {"type": 'photo',"media": new_src}
         driver.close()
-    except e:
+    except:
         print("Error oo")
