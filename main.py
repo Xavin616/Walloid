@@ -49,31 +49,28 @@ def send_image(id, query, images):
         send_message(id, 'An error occurred')
 
 
-def main(msg):
-    chat_id, txt, username = get_message(msg)
-    if txt:
-        if '/start' in txt:
-            print('Sending Welcome message')
-            send_message(chat_id, welcome.format(user = username))
-        elif 'search' in txt:
-            new_txt = (txt.replace('search', '')).strip()
-            print('Searching:', new_txt)
-            send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
-            return Response('ok', status=200)
-        else:
-            return Response('ok', status=200)
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         msg = request.get_json()
-        futures = []
-        with ThreadPoolExecutor() as executor:
-            for num in range(1,2):
-                    futures.append(
-                       executor.submit(main)
-                    )
-        wait(futures)
+        chat_id, txt, username = get_message(msg)
+        if txt:
+            if '/start' in txt:
+                print('Sending Welcome message')
+                send_message(chat_id, welcome.format(user = username))
+            elif 'search' in txt:
+                new_txt = (txt.replace('search', '')).strip()
+                print('Searching:', new_txt)
+                futures = []
+                with ThreadPoolExecutor() as executor:
+                    for num in range(1,21):
+                        futures.append(
+                          executor.submit(send_image, chat_id, new_txt, [i for i in get_images(new_txt)])  
+                        )
+                wait(futures)
+            return Response('ok', status=200)
+        else:
+            return Response('ok', status=200)
     else:
         return "Bad command, you have doomed us"
 
