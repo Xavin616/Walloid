@@ -69,7 +69,7 @@ def index():
         msg = request.get_json()
         futures = []
         with ThreadPoolExecutor() as executor:
-            for num in range(1,21):
+            for num in range(1,2):
                     futures.append(
                        executor.submit(main, msg)
                     )
