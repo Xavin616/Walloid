@@ -41,7 +41,7 @@ def send_image(id, query, images):
                 "media": images,
             }
             res = post(url, json=payload)
-            return res
+            return Response('ok', status=200)
         except:
             print('Error oo')
             return Response('ok', status=200)
