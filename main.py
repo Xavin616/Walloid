@@ -1,7 +1,7 @@
 from flask import Flask, Response, request
 from requests import get, post
 import json
-from wallpaper import get_images
+from t import get_images
 from concurrent.futures import ThreadPoolExecutor, wait
 
 app = Flask(__name__)
