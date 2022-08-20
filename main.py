@@ -61,3 +61,6 @@ def index():
             return Response('ok', status=200)
     else:
         return "Bad command, you have doomed us"
+
+if __name__ == '__main__':
+    app.run(debug=True)
