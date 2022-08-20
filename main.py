@@ -34,6 +34,7 @@ def send_message(id, text):
 def send_image(id, query, images):
     if images != None:
         try:
+            print('Sending pics')
             url = telegram_api + '/sendMediaGroup'
             payload = {
                 "chat_id": id,
