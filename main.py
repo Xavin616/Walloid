@@ -2,6 +2,7 @@ from flask import Flask, Response, request
 from requests import get, post
 import json
 from wallpaper import get_images
+from concurrent.futures import ThreadPoolExecutor, wait
 
 app = Flask(__name__)
 
@@ -31,13 +32,19 @@ def send_message(id, text):
     return res
 
 def send_image(id, query, images):
-    url = telegram_api + '/sendMediaGroup'
-    payload = {
-        "chat_id": id,
-        "media": images,
-    }
-    res = post(url, json=payload)
-    return res
+    if images != None:
+        try:
+            url = telegram_api + '/sendMediaGroup'
+            payload = {
+                "chat_id": id,
+                "media": images,
+            }
+            res = post(url, json=payload)
+            return res
+        except:
+            return None
+    else:
+        send_message(id, 'An error occurred')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -52,11 +59,13 @@ def index():
             elif 'search' in txt:
                 new_txt = (txt.replace('search', '')).strip()
                 print('Searching:', new_txt)
-                images = [i for i in get_images(new_txt)]
-                if images != None:
-                    send_image(chat_id, txt, images)
-                else:
-                    send_message(chat_id, text= "An error occurred!")
+                futures = []
+                with ThreadPoolExecutor() as executor:
+                    for num in range(1,21):
+                        futures.append(
+                          executor.submit(send_image(chat_id, new_txt, [i for i in get_images(new_txt)]))  
+                        )
+                wait(futures)
             return Response('ok', status=200)
         else:
             return Response('ok', status=200)

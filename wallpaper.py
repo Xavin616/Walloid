@@ -17,13 +17,13 @@ driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), o
 
 def get_images(query: str):
     search = url + query
-    driver.get(search)
     try:
+        driver.get(search)
         images = driver.find_elements(By.CLASS_NAME, 'lozad')
         for i in images:
             src = i.get_attribute('src')
             new_src = src.replace('thumb', 'file')
             yield {"type": 'photo',"media": new_src}
-        driver.quit()
+        driver.close()
     except:
         return None
