@@ -53,7 +53,10 @@ def index():
                 new_txt = (txt.replace('search', '')).strip()
                 print('Searching:', new_txt)
                 images = [i for i in get_images(new_txt)]
-                send_image(chat_id, txt, images)
+                if images != None:
+                    send_image(chat_id, txt, images)
+                else:
+                    send_message(chat_id, text= "An error occurred!")
             return Response('ok', status=200)
         else:
             return Response('ok', status=200)
