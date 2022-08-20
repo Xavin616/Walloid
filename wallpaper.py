@@ -12,7 +12,6 @@ url = "https://wallpapers.com/search/"
 opt = ChromeOptions()
 opt.add_argument('--headless')
 opt.add_argument('--no-sandbox')
-opt.add_argument('--incognito')
 opt.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=opt)
 
