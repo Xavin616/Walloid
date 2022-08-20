@@ -24,6 +24,6 @@ def get_images(query: str):
             src = i.get_attribute('src')
             new_src = src.replace('thumb', 'file')
             yield {"type": 'photo',"media": new_src}
-        driver.close()
+        driver.quit()
     except:
         print("Error oo")

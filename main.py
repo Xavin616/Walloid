@@ -49,35 +49,33 @@ def send_image(id, query, images):
         send_message(id, 'An error occurred')
 
 
-
-def index():
-    if request.method == 'POST':
-        msg = request.get_json()
-        chat_id, txt, username = get_message(msg)
-        if txt:
-            if '/start' in txt:
-                print('Sending Welcome message')
-                send_message(chat_id, welcome.format(user = username))
-            elif 'search' in txt:
-                new_txt = (txt.replace('search', '')).strip()
-                print('Searching:', new_txt)
-                send_image(chat_id, new_txt, [i for i in get_images(new_txt)]) 
+def main(msg):
+    chat_id, txt, username = get_message(msg)
+    if txt:
+        if '/start' in txt:
+            print('Sending Welcome message')
+            send_message(chat_id, welcome.format(user = username))
+        elif 'search' in txt:
+            new_txt = (txt.replace('search', '')).strip()
+            print('Searching:', new_txt)
+            send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
             return Response('ok', status=200)
         else:
             return Response('ok', status=200)
-    else:
-        return "Bad command, you have doomed us"
 
 @app.route('/', methods=['GET', 'POST'])
-def main():
-    futures = []
-    with ThreadPoolExecutor() as executor:
-        for num in range(1,21):
-            futures.append(
-                executor.submit(index)
-                )
-    wait(futures)
-    return 'Main app'
+def index():
+    if request.method == 'POST':
+        msg = request.get_json()
+        futures = []
+        with ThreadPoolExecutor() as executor:
+            for num in range(1,2):
+                    futures.append(
+                       executor.submit(main)
+                    )
+        wait(futures)
+    else:
+        return "Bad command, you have doomed us"
 
 if __name__ == '__main__':
     app.run(debug=True)
