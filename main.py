@@ -44,7 +44,6 @@ def send_image(id, query, images):
 def index():
     if request.method == 'POST':
         msg = request.get_json()
-        print(msg)
         chat_id, txt, username = get_message(msg)
         if txt:
             if '/start' in txt:
@@ -54,7 +53,6 @@ def index():
                 new_txt = (txt.replace('search', '')).strip()
                 print('Searching:', new_txt)
                 images = [i for i in get_images(new_txt)]
-                print(images)
                 send_image(chat_id, txt, images)
             return Response('ok', status=200)
         else:
