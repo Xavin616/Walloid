@@ -55,7 +55,7 @@ def index():
                 print('Searching:', new_txt)
                 images = [i for i in get_images(new_txt)]
                 print(images)
-                #send_image(chat_id, txt, images)
+                send_image(chat_id, txt, images)
             return Response('ok', status=200)
         else:
             return Response('ok', status=200)
