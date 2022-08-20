@@ -44,9 +44,10 @@ def send_image(id, query, images):
             return res
         except:
             print('Error oo')
-            return None
+            return Response('ok', status=200)
     else:
         send_message(id, 'An error occurred')
+        return Response('ok', status=200)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
