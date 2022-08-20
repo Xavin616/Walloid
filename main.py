@@ -42,6 +42,7 @@ def send_image(id, query, images):
             res = post(url, json=payload)
             return res
         except:
+            print('Error oo')
             return None
     else:
         send_message(id, 'An error occurred')
