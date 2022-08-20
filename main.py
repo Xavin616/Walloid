@@ -47,7 +47,6 @@ def send_image(id, query, images):
             return None
     else:
         send_message(id, 'An error occurred')
-  
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -62,17 +61,10 @@ def index():
             elif 'search' in txt:
                 new_txt = (txt.replace('search', '')).strip()
                 print('Searching:', new_txt)
-                futures = []
-                with ThreadPoolExecutor() as executor:
-                    for num in range(1,21):
-                        futures.append(
-                            executor.submit(send_image, chat_id, new_txt, [i for i in get_images(new_txt)])
-                        )
-                wait(futures)
+                send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
                 return Response('ok', status=200)
         else:
             return Response('ok', status=200)
-            
     else:
         return "Bad command, you have doomed us"
 
