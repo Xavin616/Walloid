@@ -72,11 +72,12 @@ def index():
 def main():
     futures = []
     with ThreadPoolExecutor() as executor:
-        for num in range(1,2):
+        for num in range(1,21):
             futures.append(
                 executor.submit(index)
                 )
     wait(futures)
+    return 'Main app'
 
 if __name__ == '__main__':
     app.run(debug=True)
