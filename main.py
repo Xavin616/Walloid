@@ -2,14 +2,15 @@ from flask import Flask, Response, request
 from requests import get, post
 import json
 from wallpaper import get_images
+from concurrent.futures import ThreadPoolExecutor, wait
 
 app = Flask(__name__)
 
 token = "5769955382:AAGfR5d6500c_R1E9q1iSRQfvx4GjFitaUU"
 telegram_api = f"https://api.telegram.org/bot{token}"
 
-welcome = """You summoned me, @{user} I am Walloid, keeper of HD wallpapers. 
-Use 'search <Your query>' to search for wallpapers, do not stray from this rule for there will be dire consequences. 
+welcome = """You summoned me, @{user} I am Walloid, keeper of HD wallpapers.
+Use 'search <Your query>' to search for wallpapers, do not stray from this rule for there will be dire consequences.
 To add me to a group, use:\nhttps://t.me/Wallpoper_bot?startgroup=true"""
 
 
@@ -31,14 +32,22 @@ def send_message(id, text):
     return res
 
 def send_image(id, query, images):
-    url = telegram_api + '/sendMediaGroup'
-    payload = {
-        "chat_id": id,
-        "media": images,
-    }
-    res = post(url, json=payload)
-    return res
-
+    if images != None:
+        try:
+            print('Sending pics')
+            url = telegram_api + '/sendMediaGroup'
+            payload = {
+                "chat_id": id,
+                "media": images,
+            }
+            res = post(url, json=payload)
+            return res
+        except:
+            print('Error oo')
+            return None
+    else:
+        send_message(id, 'An error occurred')
+  
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -49,17 +58,21 @@ def index():
             if '/start' in txt:
                 print('Sending Welcome message')
                 send_message(chat_id, welcome.format(user = username))
+                return Response('ok', status=200)
             elif 'search' in txt:
                 new_txt = (txt.replace('search', '')).strip()
                 print('Searching:', new_txt)
-                images = [i for i in get_images(new_txt)]
-                if images != None:
-                    send_image(chat_id, txt, images)
-                else:
-                    send_message(chat_id, text= "An error occurred!")
-            return Response('ok', status=200)
+                futures = []
+                with ThreadPoolExecutor() as executor:
+                    for num in range(1,21):
+                        futures.append(
+                            executor.submit(send_image, chat_id, new_txt, [i for i in get_images(new_txt)])
+                        )
+                wait(futures)
+                return Response('ok', status=200)
         else:
             return Response('ok', status=200)
+            
     else:
         return "Bad command, you have doomed us"
 
