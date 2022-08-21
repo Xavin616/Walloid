@@ -50,7 +50,7 @@ def send_image(id, query, images):
         send_message(id, "An error occurred in the request.")
         return True
     else:
-        send_message(id, f"Couldn't any wallpapers on {query}")
+        send_message(id, f"Couldn't find any wallpapers on {query}")
         return True
 
 @app.route('/', methods=['GET', 'POST'])
@@ -67,7 +67,7 @@ def index():
                 elif 'search' in txt:
                     new_txt = (txt.replace('search', '')).strip()
                     print('Searching:', new_txt)
-                    response = send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
+                    #response = send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
                     if response:
                         return Response('ok', status=200)
                     else:
