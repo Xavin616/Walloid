@@ -1,8 +1,7 @@
 from flask import Flask, Response, request
 from requests import get, post
 import json
-from t import get_images
-from concurrent.futures import ThreadPoolExecutor, wait
+from bs import get_images
 
 app = Flask(__name__)
 
@@ -48,8 +47,10 @@ def send_image(id, query, images):
             return True
     elif images == False:
         send_message(id, "An error occurred in the request.")
-        return True
+        print('No')
+        return False
     else:
+        print(f"Couldn't find any wallpapers on {query}")
         send_message(id, f"Couldn't find any wallpapers on {query}")
         return True
 
@@ -59,7 +60,7 @@ def index():
         if request.method == 'POST':
             msg = request.get_json()
             chat_id, txt, username = get_message(msg)
-            if txt:
+            if msg:
                 if '/start' in txt:
                     print('Sending Welcome message')
                     send_message(chat_id, welcome.format(user = username))
@@ -67,18 +68,16 @@ def index():
                 elif 'search' in txt:
                     new_txt = (txt.replace('search', '')).strip()
                     print('Searching:', new_txt)
-                    #response = send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
-                    response = True
-                    if response:
-                        return Response('ok', status=200)
-                    else:
-                        return Response('Error in sending messages', status=500)
+                    response = send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
+                    if not response:
+                        return Response('Error in sending images', status=500)
+                    return Response('ok', status=200)
             else:
                 return Response('ok', status=200)
         else:
             return "Bad request, only POST requests allowed"
     except Exception as e:
-        return Response(f'Error: {e}', status=500)
+        return Response(f'Error: {e}', status=200)
 
 
 if __name__ == '__main__':
