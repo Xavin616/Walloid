@@ -68,6 +68,7 @@ def index():
                     new_txt = (txt.replace('search', '')).strip()
                     print('Searching:', new_txt)
                     #response = send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
+                    response = True
                     if response:
                         return Response('ok', status=200)
                     else:
