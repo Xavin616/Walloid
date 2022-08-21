@@ -22,6 +22,3 @@ def get_images(query):
             return imgs
     else:
         return False
-        
-if __name__ == '__main__':
-    print([i for i in get_images('ironman')])
