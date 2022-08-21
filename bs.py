@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 def get_images(query):
-    res = requests.get(f'https://wallpapers.com/search/{query}')
+    res = requests.get(f'https://wallpapers.com/search/{query}/page/2')
     if res.status_code == 200:
         soup = bs(res.content, 'html.parser')
         imgs = soup.select('.lozad')
