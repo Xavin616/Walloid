@@ -35,15 +35,18 @@ def send_image(id, query, images):
         try:
             print('Sending pics')
             url = telegram_api + '/sendMediaGroup'
-            payload = {
-                "chat_id": id,
-                "media": images,
-                "caption": query
-            }
-            res = post(url, json=payload)
-            ans = res.text
-            if int(ans['error_code']) == 400:
-                send_message(id, f"Can't send '{query}' wallpapers right now")
+            for img in images:
+                payload = {
+                    "chat_id": id,
+                    "media": img,
+                    "caption": query
+                }
+                res = post(url, json=payload)
+                ans = res.text
+                if int(ans['error_code']) == 400:
+                    send_message(id, f"Can't send '{query}' wallpapers right now")
+                else:
+                    return True
         except Exception as e:
             send_message(id, f"Error: {e}")
         finally:
