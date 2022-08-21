@@ -13,7 +13,7 @@ def get_images(query):
                     src = 'https://wallpapers.com' + i['src']
                 except Exception as e:
                     src = 'https://wallpapers.com' + i['data-src']
-                new_src = src.replace('thumb', 'file')
+                new_src = src.replace('thumb', 'high')
                 yield {
                     "type": "photo",
                     "media": new_src
