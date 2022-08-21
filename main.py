@@ -41,7 +41,7 @@ def send_image(id, query, images):
                 "caption": query
             }
             res = post(url, json=payload)
-            print(res)
+            print(res.text)
         except Exception as e:
             send_message(id, f"Error: {e}")
         finally:
