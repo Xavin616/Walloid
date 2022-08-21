@@ -23,42 +23,23 @@ def get_message(data):
         return chat_id, text, username
     except:
         return False, False, False
-
+      
 def send_message(id, text):
     url = telegram_api+"/sendMessage"
     payload = {"chat_id": id, "text": text}
     res = post(url, json=payload)
     return res
 
-def send_image(id, query, images):
-    if len(images) != 0:
-        try:
-            print('Sending pics')
-            url = telegram_api + '/sendMediaGroup'
-            for img in images:
-                payload = {
-                    "chat_id": id,
-                    "media": img,
-                    "caption": query
-                }
-                res = post(url, json=payload)
-                ans = res.text
-                if int(ans['error_code']) == 400:
-                    send_message(id, f"Can't send '{query}' wallpapers right now")
-                else:
-                    return True
-        except Exception as e:
-            send_message(id, f"Error: {e}")
-        finally:
-            return True
-    elif images == False:
-        send_message(id, "An error occurred in the request.")
-        print('No')
-        return False
-    else:
-        print(f"Couldn't find any wallpapers on {query}")
-        send_message(id, f"Couldn't find any wallpapers on {query}")
-        return True
+def send_img(id, imglist):
+    if len(imglist) == 0:
+        send_message(id, "Couldn't get any wallpapers for your search!")
+    url = telegram_api + '/sendMediaGroup'
+    payload = {
+        "chat_id": id,
+        "media": imglist
+    }
+    res = post(url, json=payload)
+    return res.text
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -74,9 +55,14 @@ def index():
                 elif 'search' in txt:
                     new_txt = (txt.replace('search', '')).strip()
                     print('Searching:', new_txt)
-                    response = send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
-                    if not response:
-                        return Response('Error in sending images', status=500)
+                    walls = get_images(new_txt)
+                    for i in walls:
+                        response = send_img(chat_id, i)
+                        if not response:
+                            return Response('Error in sending images', status=500)
+                    return Response('ok', status=200)
+                else:
+                    send_message(chat_id, 'Invalid request')
                     return Response('ok', status=200)
             else:
                 return Response('ok', status=200)

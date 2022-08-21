@@ -13,7 +13,9 @@ def get_images(query):
         no_pages = nom//10
         imglist = []
         for i in range(1, 3):
-            x = [img for img in get_page_images(query, i)]
+            x = [img for img in get_page_images(query, str(i))]
+            if len(x) < 0:
+                continue
             imglist.append(x)
         return imglist
 
@@ -41,6 +43,6 @@ def get_page_images(query, page_no):
         return False
 
 if __name__ == "__main__":
-    prin = (get_no_pages('viking'))
+    prin = (get_images('viking'))
     for i in prin:
         print(i)
