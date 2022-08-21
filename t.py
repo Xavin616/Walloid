@@ -6,13 +6,17 @@ def get_images(query):
     if res.status_code == 200:
         soup = bs(res.content, 'html.parser')
         imgs = soup.select('.lozad')
-        for i in imgs:
-            src = ('https://wallpapers.com' + i['src'])
-            new_src = src.replace('thumb', 'file')
-            yield {
-                "type": "photo",
-                "media": new_src
-            }
+        if len(imgs) > 0:
+            for i in imgs:
+                src = ('https://wallpapers.com' + i['src'])
+                new_src = src.replace('thumb', 'file')
+                yield {
+                    "type": "photo",
+                    "media": new_src
+                }
+        else:
+            return imgs
     else:
-        return 'Error'
+        return False
+        
         

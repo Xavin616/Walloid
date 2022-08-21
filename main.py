@@ -32,42 +32,53 @@ def send_message(id, text):
     return res
 
 def send_image(id, query, images):
-    if images != None:
+    if len(images) != 0:
         try:
             print('Sending pics')
             url = telegram_api + '/sendMediaGroup'
             payload = {
                 "chat_id": id,
                 "media": images,
+                "caption": query
             }
             res = post(url, json=payload)
-            return Response('ok', status=200)
-        except:
-            print('Error oo')
-            return Response('ok', status=200)
+        except Exception as e:
+            send_message(id, f"Error: {e}")
+        finally:
+            return True
+    elif images == False:
+        send_message(id, "An error occurred in the request.")
+        return True
     else:
-        send_message(id, 'An error occurred')
-        return Response('ok', status=200)
+        send_message(id, f"Couldn't any wallpapers on {query}")
+        return True
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        msg = request.get_json()
-        chat_id, txt, username = get_message(msg)
-        if txt:
-            if '/start' in txt:
-                print('Sending Welcome message')
-                send_message(chat_id, welcome.format(user = username))
-                return Response('ok', status=200)
-            elif 'search' in txt:
-                new_txt = (txt.replace('search', '')).strip()
-                print('Searching:', new_txt)
-                send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
+    try:
+        if request.method == 'POST':
+            msg = request.get_json()
+            chat_id, txt, username = get_message(msg)
+            if txt:
+                if '/start' in txt:
+                    print('Sending Welcome message')
+                    send_message(chat_id, welcome.format(user = username))
+                    return Response('ok', status=200)
+                elif 'search' in txt:
+                    new_txt = (txt.replace('search', '')).strip()
+                    print('Searching:', new_txt)
+                    response = send_image(chat_id, new_txt, [i for i in get_images(new_txt)])
+                    if response:
+                        return Response('ok', status=200)
+                    else:
+                        return Response('Error in sending messages', status=500)
+            else:
                 return Response('ok', status=200)
         else:
-            return Response('ok', status=200)
-    else:
-        return "Bad command, you have doomed us"
+            return "Bad request, only POST requests allowed"
+    except Exception as e:
+        return Response(f'Error: {e}', status=500)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
