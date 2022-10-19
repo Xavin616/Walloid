@@ -55,12 +55,10 @@ def index():
                 elif 'search' in txt:
                     new_txt = (txt.replace('search', '')).strip()
                     print('Searching:', new_txt)
-                    walls = [i for x in get_images(new_txt)]
+                    walls = [i for i in get_images(new_txt)]
                     for i in walls:
                         response = send_img(chat_id, i)
-                        if not response:
-                            return Response('Error in sending images', status=500)
-                    return Response('ok', status=200)
+                        continue
                 else:
                     send_message(chat_id, 'Invalid request')
                     return Response('ok', status=200)
