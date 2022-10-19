@@ -58,7 +58,6 @@ def index():
                     walls = [i for i in get_images(new_txt)]
                     for i in walls:
                         response = send_img(chat_id, i)
-                        continue
                 else:
                     send_message(chat_id, 'Invalid request')
                     return Response('ok', status=200)
