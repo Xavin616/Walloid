@@ -10,7 +10,6 @@ def get_images(query):
         soup = bs(res.content, 'html.parser')
         number = soup.select(".d-flex")
         no_of_walls = (((number[5]).select_one('p')).text).replace('Wallpapers', '')
-        print(no_of_walls)
         nom = int(no_of_walls.strip())
         no_pages = nom//10
         imglist = []
