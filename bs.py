@@ -22,7 +22,7 @@ def get_images(query):
             for i in chunk(x, 10):
                 print(len(i))
                 imglist.append(i)
-        return imglist
+        return imglist[:2]
 
 def get_page_images(query, page_no):
     if page_no == 1:
