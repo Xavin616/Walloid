@@ -14,7 +14,6 @@ def get_images(query):
         no_pages = nom//10
         imglist = []
         for i in range(0,3):
-            print(i)
             x = [img for img in get_page_images(query, str(i))]
             if len(x) < 0:
                 continue
@@ -48,5 +47,5 @@ def get_page_images(query, page_no):
         return False
 
 if __name__ == "__main__":
-    for i in get_images('bella poarch'):
+    for i in get_images('harley'):
         print(i, '\n')
