@@ -57,10 +57,11 @@ def index():
                     print('Searching:', new_txt)
                     walls = [p for p in get_images(new_txt)]
                     print('Wallpaper lists: ', len(walls))
-                    first = walls[0]
-                    second = walls[1]
-                    print(len(first))
-                    print('\n', len(second))
+                    for i in walls:
+                        print('Images in list: ', len(i))
+                        response = send_img(chat_id, i)
+                        if not response:
+                            return Response('Error in sending images', status=500)
                     return Response('ok', status=200)
                 else:
                     send_message(chat_id, 'Invalid request')

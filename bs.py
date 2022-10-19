@@ -4,6 +4,10 @@ from bs4 import BeautifulSoup as bs
 url = 'https://wallpapers.com/search/{query}/'
 url2 = url+'page/{page}'
 
+def chunk(array, num):
+    for i in range(0, len(array), num):
+        yield array[i:i+num]
+
 def get_images(query):
     res = requests.get(url.format(query=query))
     if res.status_code == 200:
@@ -13,11 +17,11 @@ def get_images(query):
         nom = int(no_of_walls.strip())
         no_pages = nom//10
         imglist = []
-        for i in range(0,3):
+        for i in range(0,1):
             x = [img for img in get_page_images(query, str(i))]
-            if len(x) < 0:
-                continue
-            imglist.append(x)
+            for i in chunk(x, 10):
+                print(len(i))
+                imglist.append(i)
         return imglist
 
 def get_page_images(query, page_no):
