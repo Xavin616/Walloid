@@ -1,14 +1,16 @@
 import requests
 from bs4 import BeautifulSoup as bs
 
-url = 'https://wallpapers.com/search/{query}/page/{page}'
+url = 'https://wallpapers.com/search/{query}/'
+url2 = url+'page/{page}'
 
 def get_images(query):
     res = requests.get(url.format(query=query, page=1))
     if res.status_code == 200:
         soup = bs(res.content, 'html.parser')
         number = soup.select(".d-flex")
-        no_of_walls = (((number[4]).select_one('p')).text).replace('Wallpapers', '')
+        no_of_walls = (((number[5]).select_one('p')).text).replace('Wallpapers', '')
+        print(no_of_walls)
         nom = int(no_of_walls.strip())
         no_pages = nom//10
         imglist = []
@@ -20,7 +22,7 @@ def get_images(query):
         return imglist
 
 def get_page_images(query, page_no):
-    res = requests.get(url.format(query=query, page=page_no))
+    res = requests.get(url2.format(query=query, page=page_no) if page_no != 1 else url.format(query, page_no))
     if res.status_code == 200:
         soup = bs(res.content, 'html.parser')
         imgs = soup.select('.lozad')
@@ -43,6 +45,5 @@ def get_page_images(query, page_no):
         return False
 
 if __name__ == "__main__":
-    prin = (get_images('viking'))
-    for i in prin:
+    for i in get_images('bella poarch'):
         print(i)
