@@ -58,6 +58,9 @@ def index():
                     walls = [i for i in get_images(new_txt)]
                     for i in walls:
                         response = send_img(chat_id, i)
+                        if not response:
+                            return Response('Error in sending images', status=500)
+                    return Response('ok', status=200)
                 else:
                     send_message(chat_id, 'Invalid request')
                     return Response('ok', status=200)
