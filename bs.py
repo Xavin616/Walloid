@@ -47,5 +47,6 @@ def get_page_images(query, page_no):
         return False
 
 if __name__ == "__main__":
-    for i in get_images('harley'):
+    x = [i for i in get_images('itachi')]
+    for i in x:
         print(i, '\n')
