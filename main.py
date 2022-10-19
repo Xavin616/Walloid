@@ -59,8 +59,8 @@ def index():
                     print('Wallpaper lists: ', len(walls))
                     first = walls[0]
                     second = walls[1]
-                    print(first)
-                    print('\n', second)
+                    print(len(first))
+                    print('\n', len(second))
                     return Response('ok', status=200)
                 else:
                     send_message(chat_id, 'Invalid request')
