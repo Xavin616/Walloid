@@ -13,7 +13,7 @@ Use 'search <Your query>' to search for wallpapers.
 To add me to a group, use:\nhttps://t.me/Wallpoper_bot?startgroup=true"""
 
 
-# Send text message to chat
+# Process received message from chat
 def get_message(data):
     try:
         chat_id = data['message']['chat']['id']
@@ -22,13 +22,15 @@ def get_message(data):
         return chat_id, text, username
     except:
         return False, False, False
-      
+
+# Send message to chat
 def send_message(id, text):
     url = telegram_api+"/sendMessage"
     payload = {"chat_id": id, "text": text}
     res = post(url, json=payload)
     return res
-
+    
+# Send media/images to chat
 def send_img(id, imglist):
     if len(imglist) == 0:
         send_message(id, "Couldn't get any wallpapers for your search!")
@@ -37,6 +39,7 @@ def send_img(id, imglist):
     res = post(url, json=payload)
     return res.text
 
+# Main Bot Server Code
 @app.route('/', methods=['GET', 'POST'])
 def index():
     try:
@@ -45,15 +48,11 @@ def index():
             chat_id, txt, username = get_message(msg)
             if msg:
                 if '/start' in txt:
-                    print('Sending Welcome message')
                     send_message(chat_id, welcome.format(user = username))
                     return Response('ok', status=200)
                 elif 'search' in txt:
                     new_txt = (txt.replace('search', '')).strip()
-                    walls = [p for p in get_images(new_txt)]
-                    print('Wallpaper lists: ', len(walls))
-                    for i in walls:
-                        print('Images in list: ', len(i))
+                    for i in get_images(new_txt):
                         response = send_img(chat_id, i)
                         if not response:
                             return Response('Error in sending images', status=500)
