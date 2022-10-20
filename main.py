@@ -8,18 +8,17 @@ app = Flask(__name__)
 token = "5769955382:AAGfR5d6500c_R1E9q1iSRQfvx4GjFitaUU"
 telegram_api = f"https://api.telegram.org/bot{token}"
 
-welcome = """You summoned me, @{user} I am Walloid, keeper of HD wallpapers.
-Use 'search <Your query>' to search for wallpapers, do not stray from this rule for there will be dire consequences.
+welcome = """You summoned me, @{user} I am Walloid, a HD wallpaper bot.
+Use 'search <Your query>' to search for wallpapers.
 To add me to a group, use:\nhttps://t.me/Wallpoper_bot?startgroup=true"""
 
 
+# Send text message to chat
 def get_message(data):
     try:
         chat_id = data['message']['chat']['id']
-        text = data['message']['text']
-        text = text.lower()
+        text = data['message']['text'].lower()
         username = data['message']['from']['username']
-        #print(chat_id, text, username)
         return chat_id, text, username
     except:
         return False, False, False
@@ -34,10 +33,7 @@ def send_img(id, imglist):
     if len(imglist) == 0:
         send_message(id, "Couldn't get any wallpapers for your search!")
     url = telegram_api + '/sendMediaGroup'
-    payload = {
-        "chat_id": id,
-        "media": imglist
-    }
+    payload = {"chat_id": id, "media": imglist}
     res = post(url, json=payload)
     return res.text
 
@@ -54,7 +50,6 @@ def index():
                     return Response('ok', status=200)
                 elif 'search' in txt:
                     new_txt = (txt.replace('search', '')).strip()
-                    print('Searching:', new_txt)
                     walls = [p for p in get_images(new_txt)]
                     print('Wallpaper lists: ', len(walls))
                     for i in walls:

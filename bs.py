@@ -8,22 +8,6 @@ def chunk(array, num):
     for i in range(0, len(array), num):
         yield array[i:i+num]
 
-def get_images(query):
-    res = requests.get(url.format(query=query))
-    if res.status_code == 200:
-        soup = bs(res.content, 'html.parser')
-        number = soup.select(".d-flex")
-        no_of_walls = (((number[5]).select_one('p')).text).replace('Wallpapers', '')
-        nom = int(no_of_walls.strip())
-        no_pages = nom//10
-        imglist = []
-        for i in range(0,1):
-            x = [img for img in get_page_images(query, str(i))]
-            for i in chunk(x, 10):
-                print(len(i))
-                imglist.append(i)
-        return imglist[:2]
-
 def get_page_images(query, page_no):
     if page_no == 1:
         res = requests.get(url.format(query=query))
@@ -50,7 +34,14 @@ def get_page_images(query, page_no):
     else:
         return False
 
+def get_images(query):
+    imglist = []
+    for i in range(0,1):
+        x = [img for img in get_page_images(query, str(i))]
+        for i in chunk(x, 10):
+            # print(f"List: {y.index(i)} Found {len(i)} images.")
+            imglist.append(i)
+    return imglist[:3]
+
 if __name__ == "__main__":
-    x = [i for i in get_images('itachi')]
-    for i in x:
-        print(i, '\n')
+    x = [i for i in get_images('neon')]
